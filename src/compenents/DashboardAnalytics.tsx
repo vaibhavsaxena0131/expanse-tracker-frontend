@@ -10,8 +10,8 @@ const CATEGORY_COLORS = [
   "#6366f1", "#34D399", "#F59E42", "#EF4444", "#A78BFA", "#F472B6", "#06B6D4"
 ];
 
-function renderCustomizedLabel({ percent }: { percent: number }) {
-  return `${(percent * 100).toFixed(0)}%`;
+function renderCustomizedLabel(props: { percent?: number }) {
+  return `${((props.percent ?? 0) * 100).toFixed(0)}%`;
 }
 
 export default function DashboardAnalytics({ expenses }: { expenses: Expense[] }) {

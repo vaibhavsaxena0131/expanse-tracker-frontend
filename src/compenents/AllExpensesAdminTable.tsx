@@ -52,7 +52,8 @@ const AllExpensesAdminTable: React.FC<AllExpensesAdminTableProps> = ({ expenses,
             >
               <td className="px-7 py-4">{new Date(exp.date).toLocaleDateString()}</td>
               <td className="px-7 py-4">{exp.description}</td>
-              <td className="px-7 py-4">{exp.submittedBy || exp.userName || "—"}</td>
+              <td className="px-7 py-4">—</td>
+              {/* <td className="px-7 py-4">{exp.submittedBy || exp.userName || "—"}</td> */}
               <td className="px-7 py-4">{exp.category}</td>
               <td className="px-7 py-4 font-bold text-indigo-700">${exp.amount}</td>
               <td className="px-7 py-4">

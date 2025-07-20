@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import logo from "../assets/logo-Intelebee.webp";
 import { Link } from "react-router-dom";
 

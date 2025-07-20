@@ -9,10 +9,13 @@ import DashboardAnalytics from "../compenents/DashboardAnalytics";
 import Navbar from "../compenents/Navbar";
 import { logout } from "../features/authSlice";
 import Footer from "../compenents/Footer";
+import { useNavigate } from "react-router-dom";
+
 
 export default function EmployeeDashboard() {
   const user = useAppSelector((state) => state.auth.user);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [activeSection, setActiveSection] = useState<"dashboard" | "expenses" | "add">("dashboard");
   const [editExpense, setEditExpense] = useState<Expense | null>(null);
@@ -121,7 +124,7 @@ export default function EmployeeDashboard() {
   // Handle sign out
   const handleSignOut = () => {
     dispatch(logout());
-    navigator("/");
+    navigate("/");
   };
 
   // Navbar titles/subtitles by section
