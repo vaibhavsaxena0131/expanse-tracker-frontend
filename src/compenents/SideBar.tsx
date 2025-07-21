@@ -45,7 +45,7 @@ function Sidebar({
   };
 
   return (
-    <aside className="w-64 min-h-screen bg-white shadow-xl p-6 border-r border-gray-200 flex flex-col">
+    <aside className="w-64 h-screen bg-white shadow-xl p-6 border-r border-gray-200 flex flex-col overflow-y-auto">
       <div className="mb-8">
         <h2 className="text-2xl font-bold text-indigo-700 flex items-center">
           <CurrencyRupeeIcon className="h-6 w-6 mr-2 text-indigo-500" />

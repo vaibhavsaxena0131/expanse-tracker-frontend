@@ -1,69 +1,90 @@
-# React + TypeScript + Vite
+# 💸 Expense Tracker Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A frontend web application for tracking employee expenses, with features like submitting expenses, approval/rejection by admins, and real-time status updates.
 
-Currently, two official plugins are available:
+Built with:
+- ⚛️ React
+- 🧠 Redux Toolkit
+- ⛑️ TypeScript
+- 🧪 Axios
+- 🌐 API integration with backend (Node.js)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## Expanding the ESLint configuration
+## 📦 Features
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- 👤 User authentication (login/register)
+- 📄 Submit new expense requests
+- 📋 View submitted expense history
+- ✅ Admin approval/rejection of expenses
+- 🔄 Auto-refresh after action (approve/reject)
+- 🔐 Secure API calls with token and credentials
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+## 🚀 Getting Started
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Prerequisites
+
+- Node.js (v20+)
+- npm
+
+---
+
+### 📁 Project Structure
+
+```
+src/
+├── components/        # Reusable UI components
+├── pages/             # Page-level components (Dashboard, Login, etc.)
+├── store/             # Redux Toolkit setup (slices, store)
+├── api/               # Axios config and API calls
+├── utils/             # Helper functions
+└── App.tsx            # Main app entry
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 🧠 State Management
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Using `@reduxjs/toolkit`:
+
+* `expensesSlice` for expense items
+* `authSlice` for login/logout/auth state
+
+---
+
+## 📡 API Usage
+
+The app makes authenticated requests using Axios. Login tokens are stored in cookies using:
+
+```ts
+axios.defaults.withCredentials = true;
 ```
+
+---
+
+## 🛠️ Scripts
+
+```bash
+npm run dev       # start development server
+npm run build     # build for production
+npm run preview   # preview built app
+```
+
+---
+
+## 🧪 TODOs / Improvements
+
+* [ ] Add filters for date/category
+* [ ] Add notifications on approval/rejection
+* [ ] Add pagination and search
+* [ ] Add dark mode toggle
+
+---
+
+## 🧑‍💻 Contributors
+
+* Vaibhav 
+
+---
