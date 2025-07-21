@@ -11,7 +11,6 @@ import { logout } from "../features/authSlice";
 import Footer from "../compenents/Footer";
 import { useNavigate } from "react-router-dom";
 
-
 export default function EmployeeDashboard() {
   const user = useAppSelector((state) => state.auth.user);
   const dispatch = useAppDispatch();
@@ -78,7 +77,7 @@ export default function EmployeeDashboard() {
   }, []);
 
   // Handle submit (add or update)
-  const handleSubmitExpense = async (e: React.FormEvent) => {
+  const handleSubmitExpense = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
@@ -107,10 +106,10 @@ export default function EmployeeDashboard() {
       alert("Failed to save expense");
     }
     setIsSubmitting(false);
-  };
+  }, [editExpense, formData]);
 
   // Handle delete
-  const handleDeleteExpense = async (id: string) => {
+  const handleDeleteExpense = useCallback(async (id: string) => {
     if (!window.confirm("Are you sure you want to delete this expense?"))
       return;
     try {
@@ -119,16 +118,16 @@ export default function EmployeeDashboard() {
     } catch (err) {
       alert("Failed to delete expense");
     }
-  };
+  }, []);
 
   // Handle sign out
-  const handleSignOut = () => {
+  const handleSignOut = useCallback(() => {
     dispatch(logout());
     navigate("/");
-  };
+  }, [dispatch, navigate]);
 
   // Navbar titles/subtitles by section
-  const navConfig = {
+  const navConfig = useMemo(() => ({
     dashboard: {
       title: "Dashboard",
       subtitle: "Overview of your expense activity",
@@ -141,7 +140,7 @@ export default function EmployeeDashboard() {
       title: "Add New Expense",
       subtitle: "Submit a new expense for approval",
     },
-  };
+  }), []);
 
   return (
     <div className="flex h-screen bg-gradient-to-br from-indigo-100 to-white">
@@ -179,7 +178,7 @@ export default function EmployeeDashboard() {
           )}
 
           {activeSection === "dashboard" && (
-            <DashboardAnalytics expenses={expenses} />
+            <DashboardAnalytics expenses={expenses} loading={loading} />
           )}
 
           {activeSection === "add" && (

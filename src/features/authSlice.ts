@@ -25,15 +25,13 @@ const initialState: AuthState = {
  * Async thunk: login
  */
 export const login = createAsyncThunk<
-  { user: User }, // Only user is returned
+  { user: User },
   { email: string; password: string },
   { rejectValue: string }
 >(
   '/auth/login',
   async ({ email, password }, thunkAPI) => {
     try {
-      console.log(api,'this is api',process.env.VITE_BACKEND_URL)
-      console.log(import.meta.env.VITE_BACKEND_URL,'this is env');
       
       const res = await api.post('/auth/login', { email, password });
       console.log(res,'this is res')
@@ -41,31 +39,14 @@ export const login = createAsyncThunk<
         user: res.data.user,
       };
     } catch (err: any) {
+      console.log(err,'this is err');
+      
       return thunkAPI.rejectWithValue(
         err.response?.data?.message || 'Login failed'
       );
     }
   }
 );
-// export const login = createAsyncThunk<
-//   User, // return type
-//   { email: string; password: string },
-//   { rejectValue: string }
-// >(
-//   '/auth/login',
-//   async ({ email, password }, thunkAPI) => {
-//     try {
-//       const res = await api.post('/auth/login', { email, password });
-//       console.log("this is the response", res);
-      
-//       return res.data.user; // adjust if backend returns differently
-//     } catch (err: any) {
-//       return thunkAPI.rejectWithValue(
-//         err.response?.data?.message || 'Login failed'
-//       );
-//     }
-//   }
-// );
 
 const authSlice = createSlice({
   name: 'auth',

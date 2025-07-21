@@ -1,53 +1,49 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import api from "../api/axios";
 import { useAppSelector, useAppDispatch } from "../store/hooks";
+import ApprovalQueue from "../compenents/ApprovalQueue";
 import Sidebar from "../compenents/SideBar";
 import Navbar from "../compenents/Navbar";
 import Footer from "../compenents/Footer";
-// Import your admin components here
-// import AllExpensesTable from "../compenents/AllExpensesTable";
-// import ApprovalQueue from "../compenents/ApprovalQueue";
-// import TeamAnalytics from "../compenents/TeamAnalytics";
 import { logout } from "../features/authSlice";
 import type { Expense } from "../features/expensesSlice";
 import { useNavigate } from "react-router-dom";
 import AllExpensesAdminTable from "../compenents/AllExpensesAdminTable";
+import TeamAnalytics from "../compenents/TeamAnalytics";
 
 export default function AdminDashboard() {
   const user = useAppSelector((state) => state.auth.user);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  // Section state
-  const [activeSection, setActiveSection] = useState<"all-expenses" | "approval-queue" | "team-analytics">("all-expenses");
+  const [activeSection, setActiveSection] = useState<
+    "all-expenses" | "approval-queue" | "team-analytics"
+  >("all-expenses");
 
-  // Data state
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [loading, setLoading] = useState(false);
 
-  // Fetch all expenses for admin
-  useEffect(() => {
-    const fetchExpenses = async () => {
-      setLoading(true);
-      try {
-        const res = await api.get("/expenses"); // Adjust endpoint as needed
-        setExpenses(res.data.expenses || res.data);
-      } catch (err) {
-        console.error("Failed to fetch expenses", err);
-      }
-      setLoading(false);
-    };
-    fetchExpenses();
-  }, [activeSection]);
+  const fetchExpenses = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await api.get("/expenses/all");
+      setExpenses(res.data.expenses || res.data);
+    } catch (err) {
+      console.error("Failed to fetch expenses", err);
+    }
+    setLoading(false);
+  }, []);
 
-  // Sign out
+  useEffect(() => {
+    fetchExpenses();
+  }, [activeSection, fetchExpenses]);
+
   const handleSignOut = () => {
     dispatch(logout());
     navigate("/");
   };
 
-  // Navbar config
-  const navConfig = {
+  const navConfig = useMemo(() => ({
     "all-expenses": {
       title: "All Expenses",
       subtitle: "View and manage all team expenses",
@@ -60,7 +56,7 @@ export default function AdminDashboard() {
       title: "Team Analytics",
       subtitle: "Comprehensive overview of team expense patterns",
     },
-  };
+  }), []);
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-indigo-100 to-white">
@@ -68,11 +64,9 @@ export default function AdminDashboard() {
         user={user}
         active={activeSection}
         onSignOut={handleSignOut}
-        // Employee handlers (not used for admin, but required by props)
         onAddClick={() => {}}
         onShowExpenses={() => {}}
         onShowDashboard={() => {}}
-        // Admin handlers
         onShowAllExpenses={() => setActiveSection("all-expenses")}
         onShowApprovalQueue={() => setActiveSection("approval-queue")}
         onShowTeamAnalytics={() => setActiveSection("team-analytics")}
@@ -89,12 +83,14 @@ export default function AdminDashboard() {
             <AllExpensesAdminTable expenses={expenses} loading={loading} />
           )}
           {activeSection === "approval-queue" && (
-            // <ApprovalQueue expenses={expenses} loading={loading} />
-            <div>Approval Queue (replace with your component)</div>
+            <ApprovalQueue
+              expenses={expenses}
+              loading={loading}
+              onStatusChange={fetchExpenses}
+            />
           )}
           {activeSection === "team-analytics" && (
-            // <TeamAnalytics expenses={expenses} loading={loading} />
-            <div>Team Analytics (replace with your component)</div>
+            <TeamAnalytics expenses={expenses} loading={loading} />
           )}
         </main>
         <Footer />

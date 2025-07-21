@@ -14,7 +14,13 @@ function renderCustomizedLabel(props: { percent?: number }) {
   return `${((props.percent ?? 0) * 100).toFixed(0)}%`;
 }
 
-export default function DashboardAnalytics({ expenses }: { expenses: Expense[] }) {
+export default function DashboardAnalytics({
+  expenses,
+  loading = false,
+}: {
+  expenses: Expense[];
+  loading?: boolean;
+}) {
   // Analytics
   const total = useMemo(() => expenses.reduce((sum, e) => sum + Number(e.amount), 0), [expenses]);
   const approved = useMemo(() => expenses.filter(e => e.status === "APPROVED").reduce((sum, e) => sum + Number(e.amount), 0), [expenses]);
@@ -70,7 +76,7 @@ export default function DashboardAnalytics({ expenses }: { expenses: Expense[] }
           </span>
           <div>
             <div className="text-gray-500 text-sm">Total Expenses</div>
-            <div className="text-2xl font-bold">${total.toFixed(2)}</div>
+            <div className="text-2xl font-bold">${total.toLocaleString()}</div>
           </div>
         </div>
         <div className="flex-1 min-w-[220px] bg-white rounded-xl shadow p-6 flex items-center gap-4 mb-4">
@@ -79,7 +85,7 @@ export default function DashboardAnalytics({ expenses }: { expenses: Expense[] }
           </span>
           <div>
             <div className="text-gray-500 text-sm">Approved</div>
-            <div className="text-2xl font-bold">${approved.toFixed(2)}</div>
+            <div className="text-2xl font-bold">${approved.toLocaleString()}</div>
           </div>
         </div>
         <div className="flex-1 min-w-[220px] bg-white rounded-xl shadow p-6 flex items-center gap-4 mb-4">
@@ -88,7 +94,7 @@ export default function DashboardAnalytics({ expenses }: { expenses: Expense[] }
           </span>
           <div>
             <div className="text-gray-500 text-sm">Pending</div>
-            <div className="text-2xl font-bold">${pending.toFixed(2)}</div>
+            <div className="text-2xl font-bold">${pending.toLocaleString()}</div>
           </div>
         </div>
         <div className="flex-1 min-w-[220px] bg-white rounded-xl shadow p-6 flex items-center gap-4 mb-4">
@@ -97,7 +103,7 @@ export default function DashboardAnalytics({ expenses }: { expenses: Expense[] }
           </span>
           <div>
             <div className="text-gray-500 text-sm">Rejected</div>
-            <div className="text-2xl font-bold">${rejected.toFixed(2)}</div>
+            <div className="text-2xl font-bold">${rejected.toLocaleString()}</div>
           </div>
         </div>
       </div>
@@ -105,56 +111,66 @@ export default function DashboardAnalytics({ expenses }: { expenses: Expense[] }
       {/* Charts */}
       <div className="bg-white rounded-xl shadow p-6 mb-8">
         <div className="text-lg font-semibold mb-4">Expenses by Category</div>
-        <ResponsiveContainer width="100%" height={260}>
-          <PieChart>
-            <Pie
-              data={categoryData}
-              dataKey="value"
-              nameKey="name"
-              cx="50%"
-              cy="50%"
-              outerRadius={90}
-              innerRadius={50}
-              label={renderCustomizedLabel}
-              labelLine={false}
-              isAnimationActive
-            >
-              {categoryData.map((entry, idx) => (
-                <Cell key={entry.name} fill={entry.color} />
+        {loading ? (
+          <div className="text-indigo-600 text-center py-16">Loading...</div>
+        ) : (
+          <>
+            <ResponsiveContainer width="100%" height={260}>
+              <PieChart aria-label="Expenses by Category">
+                <Pie
+                  data={categoryData}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={90}
+                  innerRadius={50}
+                  label={renderCustomizedLabel}
+                  labelLine={false}
+                  isAnimationActive
+                >
+                  {categoryData.map((entry, idx) => (
+                    <Cell key={entry.name} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip formatter={(value: number) => `$${value.toLocaleString()}`} />
+                <Legend verticalAlign="bottom" height={36} />
+              </PieChart>
+            </ResponsiveContainer>
+            <div className="flex flex-wrap gap-4 mt-4">
+              {categoryData.map((entry) => (
+                <span key={entry.name} className="flex items-center text-sm" style={{ color: entry.color }}>
+                  <span className="inline-block w-3 h-3 rounded-full mr-2" style={{ background: entry.color }}></span>
+                  {entry.name}
+                </span>
               ))}
-            </Pie>
-            <Tooltip formatter={(value: number) => `$${value.toFixed(2)}`} />
-            <Legend verticalAlign="bottom" height={36} />
-          </PieChart>
-        </ResponsiveContainer>
-        <div className="flex flex-wrap gap-4 mt-4">
-          {categoryData.map((entry) => (
-            <span key={entry.name} className="flex items-center text-sm" style={{ color: entry.color }}>
-              <span className="inline-block w-3 h-3 rounded-full mr-2" style={{ background: entry.color }}></span>
-              {entry.name}
-            </span>
-          ))}
-        </div>
+            </div>
+          </>
+        )}
       </div>
       <div className="bg-white rounded-xl shadow p-6 mb-8">
         <div className="flex justify-between items-center mb-4">
           <div className="text-lg font-semibold">Monthly Trend</div>
           <div className="text-xs text-gray-500">Last 6 months</div>
         </div>
-        <ResponsiveContainer width="100%" minWidth={600} height={320}>
-          <LineChart data={monthlyTrend}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="month">
-              <Label value="Month" offset={-5} position="insideBottom" />
-            </XAxis>
-            <YAxis>
-              <Label value="Amount" angle={-90} position="insideLeft" />
-            </YAxis>
-            <Tooltip formatter={(value: number) => `$${value.toFixed(2)}`} />
-            <Legend />
-            <Line type="monotone" dataKey="amount" stroke="#6366f1" strokeWidth={3} dot={{ r: 5 }} activeDot={{ r: 7 }} />
-          </LineChart>
-        </ResponsiveContainer>
+        {loading ? (
+          <div className="text-indigo-600 text-center py-16">Loading...</div>
+        ) : (
+          <ResponsiveContainer width="100%" minWidth={600} height={320}>
+            <LineChart data={monthlyTrend} aria-label="Monthly Expense Trend">
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="month">
+                <Label value="Month" offset={-5} position="insideBottom" />
+              </XAxis>
+              <YAxis>
+                <Label value="Amount" angle={-90} position="insideLeft" />
+              </YAxis>
+              <Tooltip formatter={(value: number) => `$${value.toLocaleString()}`} />
+              <Legend />
+              <Line type="monotone" dataKey="amount" stroke="#6366f1" strokeWidth={3} dot={{ r: 5 }} activeDot={{ r: 7 }} />
+            </LineChart>
+          </ResponsiveContainer>
+        )}
       </div>
 
       {/* Recent Expenses */}
@@ -176,7 +192,7 @@ export default function DashboardAnalytics({ expenses }: { expenses: Expense[] }
                 </div>
               </div>
               <div className="flex items-center gap-4">
-                <span className="font-bold text-gray-800">${Number(exp.amount).toFixed(2)}</span>
+                <span className="font-bold text-gray-800">${Number(exp.amount).toLocaleString()}</span>
                 <span className={`px-3 py-1 rounded-full text-xs font-semibold
                   ${exp.status === "APPROVED" ? "bg-green-100 text-green-700" :
                     exp.status === "REJECTED" ? "bg-red-100 text-red-700" :

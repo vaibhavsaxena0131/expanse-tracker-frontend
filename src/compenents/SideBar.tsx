@@ -34,11 +34,10 @@ function Sidebar({
   onShowApprovalQueue?: () => void;
   onShowTeamAnalytics?: () => void;
 }) {
-  const isAdmin = user?.role === "admin" || user?.role === "administrator";
+  const isAdmin = user?.role === "ADMIN";
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  // Always use this for sign out so it works everywhere
   const handleSignOut = () => {
     dispatch(logout());
     navigate("/");
@@ -65,53 +64,57 @@ function Sidebar({
               ? "bg-blue-100 text-blue-700"
               : "bg-green-100 text-green-700"
           }`}>
-            {isAdmin ? "Admin" : "Employee"}
+            {isAdmin ? "ADMIN" : "EMPLOYEE"}
           </span>
         </div>
       </div>
 
-      {/* Main Section (Employee + Admin) */}
       <nav className="flex-1">
         <SidebarSection>
-          <li>
-            <button
-              onClick={onShowDashboard}
-              className={`flex items-center px-3 py-2 rounded-lg w-full transition font-medium ${
-                active === "dashboard"
-                  ? "bg-blue-100 text-blue-700"
-                  : "text-gray-700 hover:bg-indigo-50 hover:text-indigo-700"
-              }`}
-            >
-              <ChartBarIcon className="h-5 w-5 mr-3" />
-              Dashboard
-            </button>
-          </li>
-          <li>
-            <button
-              onClick={onShowExpenses}
-              className={`flex items-center px-3 py-2 rounded-lg w-full transition font-medium ${
-                active === "expenses"
-                  ? "bg-blue-100 text-blue-700"
-                  : "text-gray-700 hover:bg-indigo-50 hover:text-indigo-700"
-              }`}
-            >
-              <ClipboardDocumentListIcon className="h-5 w-5 mr-3" />
-              My Expenses
-            </button>
-          </li>
-          <li>
-            <button
-              onClick={onAddClick}
-              className={`flex items-center px-3 py-2 rounded-lg w-full transition font-medium ${
-                active === "add"
-                  ? "bg-blue-100 text-blue-700"
-                  : "text-gray-700 hover:bg-indigo-50 hover:text-indigo-700"
-              }`}
-            >
-              <PlusCircleIcon className="h-5 w-5 mr-3 text-indigo-500" />
-              Add Expense
-            </button>
-          </li>
+          {/* Employee Section */}
+          {!isAdmin && (
+            <>
+              <li>
+                <button
+                  onClick={onShowDashboard}
+                  className={`flex items-center px-3 py-2 rounded-lg w-full transition font-medium ${
+                    active === "dashboard"
+                      ? "bg-blue-100 text-blue-700"
+                      : "text-gray-700 hover:bg-indigo-50 hover:text-indigo-700"
+                  }`}
+                >
+                  <ChartBarIcon className="h-5 w-5 mr-3" />
+                  Dashboard
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={onShowExpenses}
+                  className={`flex items-center px-3 py-2 rounded-lg w-full transition font-medium ${
+                    active === "expenses"
+                      ? "bg-blue-100 text-blue-700"
+                      : "text-gray-700 hover:bg-indigo-50 hover:text-indigo-700"
+                  }`}
+                >
+                  <ClipboardDocumentListIcon className="h-5 w-5 mr-3" />
+                  My Expenses
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={onAddClick}
+                  className={`flex items-center px-3 py-2 rounded-lg w-full transition font-medium ${
+                    active === "add"
+                      ? "bg-blue-100 text-blue-700"
+                      : "text-gray-700 hover:bg-indigo-50 hover:text-indigo-700"
+                  }`}
+                >
+                  <PlusCircleIcon className="h-5 w-5 mr-3 text-indigo-500" />
+                  Add Expense
+                </button>
+              </li>
+            </>
+          )}
           {/* Admin Tools Section */}
           {isAdmin && (
             <>

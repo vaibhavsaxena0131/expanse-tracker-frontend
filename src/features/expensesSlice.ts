@@ -9,6 +9,7 @@ export interface Expense {
   description: string;
   date: string;
   status: 'PENDING' | 'APPROVED' | 'REJECTED';
+  submittedBy?: string;
 }
 
 interface ExpensesState {
@@ -35,3 +36,5 @@ const expensesSlice = createSlice({
 export const { setExpenses, addExpense } = expensesSlice.actions;
 export const selectExpenses = (state: RootState) => state.expenses.items;
 export default expensesSlice.reducer;
+
+
