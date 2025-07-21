@@ -37,7 +37,7 @@ export default function EmployeeDashboard() {
     const fetchExpenses = async () => {
       setLoading(true);
       try {
-        const res = await api.get(`/expenses?id=${user?.id}`);
+        const res = await api.get(`/expenses`);
         setExpenses(res.data.expenses || res.data);
       } catch (err) {
         console.error("Failed to fetch expenses", err);
