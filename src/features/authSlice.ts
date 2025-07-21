@@ -32,7 +32,11 @@ export const login = createAsyncThunk<
   '/auth/login',
   async ({ email, password }, thunkAPI) => {
     try {
+      console.log(api,'this is api',process.env.VITE_BACKEND_URL)
+      console.log(import.meta.env.VITE_BACKEND_URL,'this is env');
+      
       const res = await api.post('/auth/login', { email, password });
+      console.log(res,'this is res')
       return {
         user: res.data.user,
       };
