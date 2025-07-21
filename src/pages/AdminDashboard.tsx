@@ -71,7 +71,7 @@ export default function AdminDashboard() {
         onShowApprovalQueue={() => setActiveSection("approval-queue")}
         onShowTeamAnalytics={() => setActiveSection("team-analytics")}
       />
-      <div className="flex-1 flex flex-col min-h-screen">
+      <div className="flex-1 flex flex-col min-h-screen overflow-y-auto">
         <div className="px-6 pt-6">
           <Navbar
             title={navConfig[activeSection].title}

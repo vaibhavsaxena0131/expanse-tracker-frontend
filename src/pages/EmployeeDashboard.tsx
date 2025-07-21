@@ -152,7 +152,7 @@ export default function EmployeeDashboard() {
         active={activeSection}
         onSignOut={handleSignOut}
       />
-      <div className="flex-1 flex flex-col min-h-screen">
+      <div className="flex-1 flex flex-col min-h-screen overflow-y-auto">
         {/* Navbar always at the top */}
         <div className="px-6 pt-6">
           <Navbar

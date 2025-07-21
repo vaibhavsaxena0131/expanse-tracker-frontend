@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useMemo } from "react";
 import api from "../api/axios";
 import type { Expense } from "../features/expensesSlice";
 import StatusBadge from "./formatStatus";
@@ -15,6 +15,17 @@ function ApprovalQueue({
   onStatusChange,
 }: ApprovalQueueProps) {
   const pendingExpenses = expenses.filter((exp) => exp.status === "PENDING");
+
+  // Pagination state
+  const [page, setPage] = useState(1);
+  const [limit] = useState(5);
+
+  // Paginated pending expenses
+  const totalPages = Math.max(1, Math.ceil(pendingExpenses.length / limit));
+  const paginatedExpenses = useMemo(() => {
+    const start = (page - 1) * limit;
+    return pendingExpenses.slice(start, start + limit);
+  }, [pendingExpenses, page, limit]);
 
   const handleStatusUpdate = async (
     id: string,
@@ -48,6 +59,7 @@ function ApprovalQueue({
           No pending expenses.
         </div>
       ) : (
+        <>
         <table className="min-w-full text-base text-gray-700 rounded-2xl overflow-hidden">
           <thead>
             <tr className="bg-gradient-to-r from-indigo-200 to-blue-200 text-indigo-900 font-bold sticky top-0 z-10">
@@ -112,6 +124,26 @@ function ApprovalQueue({
             ))}
           </tbody>
         </table>
+        <div className="flex justify-center mt-6 space-x-4">
+            <button
+              disabled={page === 1}
+              onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 transition"
+            >
+              Prev
+            </button>
+            <span className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md">
+              Page {page} of {totalPages}
+            </span>
+            <button
+              disabled={page === totalPages}
+              onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 transition"
+            >
+              Next
+            </button>
+          </div>
+          </>
       )}
     </div>
   );
